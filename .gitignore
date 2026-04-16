@@ -1,0 +1,74 @@
+# ==========================
+# PlatformIO
+# ==========================
+.pio/
+.pioenvs/
+.piolibdeps/
+.clang_complete
+.gcc-flags.json
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch/
+
+# ==========================
+# Arduino IDE
+# ==========================
+*.hex
+*.elf
+*.bin
+*.map
+build/
+*.o
+*.a
+*.d
+
+# ==========================
+# ESP-IDF
+# ==========================
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+
+# ==========================
+# IDEs / editores
+# ==========================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Python (scripts auxiliares)
+# ==========================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ==========================
+# Logs y temporales
+# ==========================
+*.log
+*.tmp
+*.bak
+*.orig
+
+# ==========================
+# Secretos / credenciales
+# ==========================
+secrets.h
+credentials.h
+wifi_credentials.h
+.env
+.env.local
