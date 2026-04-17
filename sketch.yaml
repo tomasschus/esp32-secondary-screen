@@ -1,0 +1,39 @@
+# Configuración Arduino CLI para ESP32 Secondary Screen
+# Hardware: JC3248W535EN — ESP32-S3 N16R8 (16 MB Flash, 8 MB PSRAM)
+#
+# Uso:
+#   arduino-cli compile --profile esp32s3_screen .
+#   arduino-cli upload  --profile esp32s3_screen --port COM<N> .
+#
+# Referencia FQBN completo:
+#   esp32:esp32:esp32s3:CDCOnBoot=cdc,USBMode=hwcdc,FlashSize=16M,
+#   FlashMode=qio,PSRAM=opi,PartitionScheme=app3M_fat9M_16MB,
+#   DebugLevel=none,UploadSpeed=921600
+
+default_fqbn: esp32:esp32:esp32s3
+default_port: (auto)
+
+profiles:
+  esp32s3_screen:
+    # ── Opciones de board ──────────────────────────────────────────────────
+    # CDCOnBoot=cdc        → Habilita USB CDC desde el boot; necesario para
+    #                        Serial.print() y transporte USB CDC nativo.
+    # USBMode=hwcdc        → Modo USB Hardware CDC del ESP32-S3 (sin bridge
+    #                        CH340/CP2102); requiere driver USB nativo en PC.
+    # FlashSize=16M        → 16 MB Flash del N16R8.
+    # FlashMode=qio        → Modo QIO (quad I/O); máximo rendimiento de flash.
+    # PSRAM=opi            → OPI PSRAM (octal SPI); necesario para activar los
+    #                        8 MB SPIRAM del N16R8.
+    # PartitionScheme=     → Esquema para 16 MB flash: ~3 MB para app,
+    #   app3M_fat9M_16MB     ~9 MB FAT filesystem (almacenamiento de archivos).
+    # DebugLevel=none      → Sin mensajes de debug del core en producción.
+    # UploadSpeed=921600   → Velocidad de upload máxima estable.
+    fqbn: esp32:esp32:esp32s3:CDCOnBoot=cdc,USBMode=hwcdc,FlashSize=16M,FlashMode=qio,PSRAM=opi,PartitionScheme=app3M_fat9M_16MB,DebugLevel=none,UploadSpeed=921600
+
+    libraries:
+      - "GFX Library for Arduino (1.6.0)"
+      - "ESPAsyncWebServer (3.1.0)"
+      - "AsyncTCP (1.1.4)"
+      - "ArduinoJson (7.2.0)"
+      - "TJpg_Decoder (1.1.0)"
+      - "lvgl (9.3.0)"

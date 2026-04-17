@@ -1,0 +1,26 @@
+{
+  "t": "layout",
+  "bg": "#0d0d0d",
+  "widgets": [
+    {
+      "type": "stats_panel",
+      "x": 10,
+      "y": 10,
+      "w": 460,
+      "h": 200
+    },
+    {
+      "type": "notify_overlay"
+    },
+    {
+      "type": "label",
+      "x": 10,
+      "y": 290,
+      "w": 200,
+      "h": 25,
+      "text": "ESP32 Screen",
+      "color": "#4a9eff",
+      "font": 12
+    }
+  ]
+}

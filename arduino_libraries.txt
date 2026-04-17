@@ -1,0 +1,78 @@
+# Librerías Arduino IDE para ESP32 Secondary Screen
+# Instalar desde: Sketch → Include Library → Manage Libraries
+#
+# Hardware destino: JC3248W535EN — ESP32-S3 N16R8 (16 MB Flash, 8 MB PSRAM)
+# Dev env: Arduino IDE 2.x + Arduino ESP32 Core 3.x
+# ─────────────────────────────────────────────────────────────────────────────
+
+Arduino_GFX_Library     >= 1.4.7    # Autor: moononournation
+                                    # Driver display QSPI AXS15231B. Incluye
+                                    # Arduino_ESP32QSPI bus y soporte para este
+                                    # controlador específico. Disponible en
+                                    # Library Manager con ese nombre exacto.
+
+ESPAsyncWebServer       >= 3.3.12   # Autor: mathieucarbou (fork activo)
+                                    # *** USAR ESTE FORK, NO el original de
+                                    # me-no-dev — el original no compila con
+                                    # Arduino ESP32 Core 3.x ***
+                                    # Fork: https://github.com/mathieucarbou/ESPAsyncWebServer
+                                    # Instalar desde Library Manager buscando
+                                    # "ESPAsyncWebServer" → elegir el de
+                                    # mathieucarbou, o descargar .zip del repo.
+
+AsyncTCP                >= 3.3.1    # Autor: mathieucarbou (fork activo)
+                                    # Dependencia directa de ESPAsyncWebServer.
+                                    # Usar el mismo fork de mathieucarbou para
+                                    # garantizar compatibilidad con Core 3.x.
+                                    # Fork: https://github.com/mathieucarbou/AsyncTCP
+                                    # Instalar junto con ESPAsyncWebServer.
+
+ArduinoJson             >= 7.2.0    # Autor: bblanchon
+                                    # Parsing JSON para mensajes de control y
+                                    # configuración de widgets. API v7 (distinta
+                                    # de v6 — no mezclar). Disponible en
+                                    # Library Manager con ese nombre exacto.
+
+TJpgDec                 >= 1.1.0    # Autor: Bodmer
+                                    # Decode JPEG → RGB565 en tiempo real.
+                                    # Buffer de trabajo (~120 KB) recomendado en
+                                    # SPIRAM (PSRAM). Disponible en Library
+                                    # Manager buscando "TJpgDec".
+
+lvgl                    >= 9.2.2    # Autor: lvgl
+                                    # Framework GUI. Requiere copiar el archivo
+                                    # lv_conf.h a la carpeta del sketch o al
+                                    # directorio de librerías de Arduino.
+                                    # La configuración del proyecto está en
+                                    # include/lv_conf.h (calibrada para este
+                                    # hardware: 192 KB heap, sin OS).
+                                    # Disponible en Library Manager buscando
+                                    # "lvgl". Versión 9.x tiene API diferente
+                                    # a 8.x — no usar < 9.2.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NOTAS DE INSTALACIÓN
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# 1. ESPAsyncWebServer + AsyncTCP
+#    Si el Library Manager muestra el fork incorrecto (me-no-dev), instalar
+#    manualmente:
+#      a) Descargar ZIP desde GitHub de mathieucarbou.
+#      b) Arduino IDE → Sketch → Include Library → Add .ZIP Library...
+#      c) Repetir para AsyncTCP.
+#
+# 2. lvgl — archivo de configuración
+#    Después de instalar, copiar el template:
+#      <Arduino libraries>/lvgl/lv_conf_template.h  →  lv_conf.h
+#    en el directorio padre de la carpeta lvgl (junto a la carpeta lvgl/).
+#    El proyecto ya incluye include/lv_conf.h con la configuración correcta
+#    para JC3248W535EN.
+#
+# 3. Orden de instalación recomendado
+#    AsyncTCP → ESPAsyncWebServer → Arduino_GFX_Library → ArduinoJson →
+#    TJpgDec → lvgl
+#
+# 4. Arduino ESP32 Core
+#    Instalar desde Boards Manager: "esp32 by Espressif Systems" >= 3.x
+#    URL del índice (si no aparece):
+#    https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json

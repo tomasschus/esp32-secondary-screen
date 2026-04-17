@@ -1,0 +1,13 @@
+{
+  "t": "layout",
+  "bg": "#0d0d0d",
+  "widgets": [
+    {
+      "type": "stats_panel",
+      "x": 10,
+      "y": 60,
+      "w": 460,
+      "h": 200
+    }
+  ]
+}
