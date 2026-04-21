@@ -45,6 +45,7 @@ typedef enum {
  * Debe llamarse en setup() después de que LVGL esté operativo.
  */
 void ui_layout_init(void);
+void ui_layout_set_ip(const char *ip);
 
 /**
  * Aplica un layout definido en JSON.

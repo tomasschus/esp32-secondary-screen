@@ -71,6 +71,15 @@ void ui_layout_init(void);
 bool ui_layout_apply(const char *json, size_t len);
 
 /**
+ * Guarda la IP del servidor WebSocket y la muestra en el layout por defecto.
+ * Llamar una vez en setup() después de ws_server_start().
+ * Persiste entre reinicios del layout (ui_layout_init la redibuija).
+ *
+ * @param ip  Cadena con la IP, ej: "192.168.0.138"
+ */
+void ui_layout_set_ip(const char *ip);
+
+/**
  * Actualiza la hora interna usada por el widget clock.
  * Llamar cuando se reciba {"t":"time","epoch":1234567890} via WebSocket.
  *

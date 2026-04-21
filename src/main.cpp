@@ -147,6 +147,10 @@ void setup() {
         while (1);
     }
 
+    /* Mostrar IP en pantalla */
+    ui_layout_set_ip(ws_server_get_ip());
+    ui_layout_init();   /* redibujar con IP incluida */
+
     Serial.println("[Main] === Listo. Esperando cliente... ===");
 }
 

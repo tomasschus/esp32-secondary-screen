@@ -8,7 +8,13 @@
       "Bash(arduino-cli core:*)",
       "Bash(arduino-cli lib:*)",
       "Bash(arduino-cli config:*)",
-      "Bash(arduino-cli compile:*)"
+      "Bash(arduino-cli compile:*)",
+      "Bash(arduino-cli board *)",
+      "Bash(arduino-cli upload *)",
+      "Bash(arduino-cli monitor *)",
+      "Bash(kill %1)",
+      "Read(//d/Documents/Arduino/libraries/GFX_Library_for_Arduino/src/**)",
+      "Bash(curl -s https://api.github.com/repos/tomasschus/esp32/contents/src)"
     ]
   }
 }

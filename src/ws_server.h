@@ -62,3 +62,6 @@ bool ws_server_has_client(void);
 
 /* Enviar texto al cliente conectado (ej: "pong") */
 void ws_server_send(const char *text);
+
+/* Devuelve la IP asignada (STA o AP) como string, ej: "192.168.0.138" */
+const char *ws_server_get_ip(void);

@@ -44,6 +44,7 @@ static ws_on_layout_t      s_on_layout     = nullptr;
 static ws_on_time_t        s_on_time       = nullptr;
 static ws_on_disconnect_t  s_on_disconnect = nullptr;
 static bool                s_has_client    = false;
+static char                s_ip_str[24]    = "0.0.0.0";
 static uint8_t            *s_jpeg_buf   = nullptr;
 static char               *s_text_buf   = nullptr;
 
@@ -224,7 +225,8 @@ bool ws_server_start(uint16_t           *screen_buf,
         Serial.println("\n[WS] Wi-Fi falló, cambiando a modo AP");
         goto start_ap;
     }
-    Serial.printf("\n[WS] IP: %s\n", WiFi.localIP().toString().c_str());
+    strlcpy(s_ip_str, WiFi.localIP().toString().c_str(), sizeof(s_ip_str));
+    Serial.printf("\n[WS] IP: %s\n", s_ip_str);
     goto start_server;
 #endif
 
@@ -234,8 +236,8 @@ start_ap:
         Serial.println("[WS] ERROR: no se pudo iniciar AP");
         return false;
     }
-    Serial.printf("[WS] AP '%s' OK, IP: %s\n",
-                  SCREEN_AP_SSID, WiFi.softAPIP().toString().c_str());
+    strlcpy(s_ip_str, WiFi.softAPIP().toString().c_str(), sizeof(s_ip_str));
+    Serial.printf("[WS] AP '%s' OK, IP: %s\n", SCREEN_AP_SSID, s_ip_str);
 
 start_server:
     s_server = new AsyncWebServer(WS_PORT);
@@ -272,3 +274,4 @@ void ws_server_stop(void) {
 
 bool ws_server_is_running(void) { return s_server != nullptr; }
 bool ws_server_has_client(void) { return s_has_client; }
+const char *ws_server_get_ip(void) { return s_ip_str; }

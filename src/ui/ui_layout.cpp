@@ -28,6 +28,9 @@
 static uint32_t s_epoch_base  = 0;   /* epoch recibido del cliente (0 = no sincronizado) */
 static uint32_t s_millis_base = 0;   /* millis() en el momento de recibir el epoch */
 
+/* ── IP del servidor WebSocket ────────────────────────────────────────────── */
+static char s_ip[24] = "";           /* guardada para redibujar en cada ui_layout_init() */
+
 /* ── Estado del clock LVGL ────────────────────────────────────────────────── */
 
 static lv_obj_t   *s_clock_label = nullptr;
@@ -238,23 +241,47 @@ static void reset_widget_state(void) {
        siguiente llamada a create_*. */
 }
 
-/* ── Layout por defecto hardcodeado ──────────────────────────────────────── */
-
-static const char *DEFAULT_LAYOUT_JSON =
-    "{"
-    "\"t\":\"layout\","
-    "\"bg\":\"#0d0d0d\","
-    "\"widgets\":["
-    "{\"type\":\"stats_panel\",\"x\":10,\"y\":10,\"w\":460,\"h\":200},"
-    "{\"type\":\"notify_overlay\"}"
-    "]"
-    "}";
+/* ── Layout por defecto ───────────────────────────────────────────────────── */
 
 /* ── API pública ──────────────────────────────────────────────────────────── */
 
+void ui_layout_set_ip(const char *ip) {
+    if (ip) strlcpy(s_ip, ip, sizeof(s_ip));
+}
+
 void ui_layout_init(void) {
     Serial.println("[Layout] Aplicando layout por defecto");
-    ui_layout_apply(DEFAULT_LAYOUT_JSON, strlen(DEFAULT_LAYOUT_JSON));
+
+    /* Construir JSON dinámico para incluir la IP si está disponible */
+    char json[512];
+    if (s_ip[0] != '\0') {
+        char ip_text[48];
+        snprintf(ip_text, sizeof(ip_text), "ws://%s:8080", s_ip);
+        snprintf(json, sizeof(json),
+            "{"
+            "\"t\":\"layout\","
+            "\"bg\":\"#0d0d0d\","
+            "\"widgets\":["
+            "{\"type\":\"stats_panel\",\"x\":10,\"y\":10,\"w\":460,\"h\":200},"
+            "{\"type\":\"label\","
+             "\"x\":10,\"y\":295,\"w\":460,\"h\":20,"
+             "\"text\":\"%s\","
+             "\"color\":\"#334455\","
+             "\"font\":12},"
+            "{\"type\":\"notify_overlay\"}"
+            "]}",
+            ip_text);
+    } else {
+        snprintf(json, sizeof(json),
+            "{"
+            "\"t\":\"layout\","
+            "\"bg\":\"#0d0d0d\","
+            "\"widgets\":["
+            "{\"type\":\"stats_panel\",\"x\":10,\"y\":10,\"w\":460,\"h\":200},"
+            "{\"type\":\"notify_overlay\"}"
+            "]}");
+    }
+    ui_layout_apply(json, strlen(json));
 }
 
 bool ui_layout_apply(const char *json, size_t len) {
