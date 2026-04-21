@@ -1,10 +1,10 @@
 #pragma once
 
-/* Resolución física del panel */
-#define TFT_RES_W  480
-#define TFT_RES_H  320
+/* Resolución física del panel (portrait nativo del AXS15231B) */
+#define TFT_RES_W  320
+#define TFT_RES_H  480
 
-/* Rotación hardware del canvas GFX: 1 = landscape 480x320 */
+/* Rotación del canvas GFX: 1 → landscape lógico 480x320 */
 #define TFT_ROT    1
 
 /* Alias portrait (usado en cálculos de touch) */

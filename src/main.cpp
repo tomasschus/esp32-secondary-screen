@@ -75,12 +75,15 @@ static void on_time(uint32_t epoch) {
 /* ── setup ───────────────────────────────────────────────────────────────── */
 void setup() {
 #ifdef ARDUINO_USB_CDC_ON_BOOT
-    delay(2000);
+    delay(3000);
 #endif
     Serial.begin(115200);
-    Serial.println("[Main] ESP32 Secondary Screen");
+    Serial.println("[Main] === Boot iniciado ===");
+    Serial.printf("[Main] PSRAM total: %u bytes\n", ESP.getPsramSize());
+    Serial.printf("[Main] Heap libre: %u bytes\n", ESP.getFreeHeap());
 
     /* Buffer de pantalla en PSRAM */
+    Serial.println("[Main] Allocando screen_buf...");
     s_screen_buf = (uint16_t *)heap_caps_malloc(
         (size_t)WS_SCREEN_W * WS_SCREEN_H * 2,
         MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
@@ -89,8 +92,10 @@ void setup() {
         while (1);
     }
     memset(s_screen_buf, 0, (size_t)WS_SCREEN_W * WS_SCREEN_H * 2);
+    Serial.println("[Main] screen_buf OK");
 
     /* Display */
+    Serial.println("[Main] Iniciando display...");
     if (!gfx->begin(40000000UL)) {
         Serial.println("[Main] ERROR: display");
         while (1);
@@ -99,12 +104,16 @@ void setup() {
     gfx->flush();
     pinMode(TFT_BL, OUTPUT);
     digitalWrite(TFT_BL, HIGH);
+    Serial.println("[Main] Display OK, backlight ON");
 
     /* LVGL */
+    Serial.println("[Main] Iniciando LVGL...");
     lv_init();
     lv_tick_set_cb(lvgl_tick_cb);
 
     uint32_t buf_px = (uint32_t)gfx->width() * gfx->height() / 10;
+    Serial.printf("[Main] Allocando LVGL buf: %u bytes (heap libre: %u)\n",
+                  buf_px * sizeof(lv_color_t), ESP.getFreeHeap());
     lv_color_t *lvgl_buf = (lv_color_t *)heap_caps_malloc(
         buf_px * sizeof(lv_color_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     if (!lvgl_buf) {
@@ -117,18 +126,22 @@ void setup() {
     lv_display_set_buffers(disp, lvgl_buf, NULL,
                            buf_px * sizeof(lv_color_t),
                            LV_DISPLAY_RENDER_MODE_PARTIAL);
+    Serial.println("[Main] LVGL OK");
 
     /* UI: inicializar con layout por defecto */
+    Serial.println("[Main] Iniciando UI...");
     ui_layout_init();
+    Serial.println("[Main] UI OK");
 
     /* Servidor WebSocket (incluye init Wi-Fi) */
+    Serial.println("[Main] Iniciando servidor WS...");
     if (!ws_server_start(s_screen_buf, on_frame, on_notify, on_stats,
                          on_layout, on_time)) {
         Serial.println("[Main] ERROR: ws_server_start");
         while (1);
     }
 
-    Serial.println("[Main] Listo. Esperando cliente...");
+    Serial.println("[Main] === Listo. Esperando cliente... ===");
 }
 
 /* ── loop ────────────────────────────────────────────────────────────────── */
