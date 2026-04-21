@@ -32,8 +32,8 @@ profiles:
 
     libraries:
       - "GFX Library for Arduino (1.6.0)"
-      - "ESPAsyncWebServer (3.1.0)"
-      - "AsyncTCP (1.1.4)"
+      - "ESP Async WebServer (3.10.3)"
+      - "Async TCP (3.4.10)"
       - "ArduinoJson (7.2.0)"
       - "TJpg_Decoder (1.1.0)"
       - "lvgl (9.3.0)"

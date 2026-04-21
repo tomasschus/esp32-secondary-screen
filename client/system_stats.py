@@ -35,16 +35,25 @@ def get_ram_percent() -> int:
 
 
 def get_cpu_temp() -> int:
-    """Temperatura CPU en °C. Funciona en macOS con sensors o psutil."""
+    """Temperatura CPU en °C. Windows: WMI. Linux/macOS: psutil/sysctl."""
+    # Windows via WMI
+    if sys.platform == "win32":
+        try:
+            import wmi  # type: ignore
+            w = wmi.WMI(namespace="root\\OpenHardwareMonitor")
+            for sensor in w.Sensor():
+                if sensor.SensorType == "Temperature" and "CPU" in sensor.Name:
+                    return int(sensor.Value)
+        except Exception:
+            pass
+        return 0
+    # Linux / macOS
     try:
         temps = psutil.sensors_temperatures()
         if temps:
             for key in ("coretemp", "cpu_thermal", "acpitz", "k10temp"):
-                if key in temps:
-                    entries = temps[key]
-                    if entries:
-                        return int(entries[0].current)
-        # macOS: intentar vía sysctl
+                if key in temps and temps[key]:
+                    return int(temps[key][0].current)
         result = subprocess.run(
             ["sysctl", "-n", "machdep.xcpm.cpu_thermal_level"],
             capture_output=True, text=True, timeout=1

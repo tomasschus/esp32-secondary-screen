@@ -174,16 +174,17 @@ static void on_ws_event(AsyncWebSocket *ws, AsyncWebSocketClient *client,
         size_t total = (size_t)info->len;
         s_text_buf[total] = '\0';
 
-        /* Detectar tipo con búsqueda mínima (sin parsear todo el JSON) */
-        const char *t = strstr(s_text_buf, "\"t\":\"");
-        if (!t) return;
-        t += 5;
+        /* Detectar tipo parseando el campo "t" con ArduinoJson
+           (el strstr manual fallaba con JSON que usa ': ' con espacio) */
+        JsonDocument hdr;
+        if (deserializeJson(hdr, s_text_buf, total) != DeserializationError::Ok) return;
+        const char *t = hdr["t"] | "";
 
-        if      (strncmp(t, "notify", 6) == 0) handle_notify(s_text_buf, total);
-        else if (strncmp(t, "stats",  5) == 0) handle_stats(s_text_buf, total);
-        else if (strncmp(t, "layout", 6) == 0) handle_layout(s_text_buf, total);
-        else if (strncmp(t, "time",   4) == 0) handle_time(s_text_buf, total);
-        else if (strncmp(t, "ping",   4) == 0) ws_server_send("pong");
+        if      (strcmp(t, "notify") == 0) handle_notify(s_text_buf, total);
+        else if (strcmp(t, "stats")  == 0) handle_stats(s_text_buf, total);
+        else if (strcmp(t, "layout") == 0) handle_layout(s_text_buf, total);
+        else if (strcmp(t, "time")   == 0) handle_time(s_text_buf, total);
+        else if (strcmp(t, "ping")   == 0) ws_server_send("pong");
     }
 }
 
