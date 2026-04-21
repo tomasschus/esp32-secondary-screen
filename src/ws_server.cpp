@@ -40,9 +40,10 @@ static uint16_t           *s_screen_buf = nullptr;
 static ws_on_frame_t       s_on_frame   = nullptr;
 static ws_on_notify_t      s_on_notify  = nullptr;
 static ws_on_stats_t       s_on_stats   = nullptr;
-static ws_on_layout_t      s_on_layout  = nullptr;
-static ws_on_time_t        s_on_time    = nullptr;
-static bool                s_has_client = false;
+static ws_on_layout_t      s_on_layout     = nullptr;
+static ws_on_time_t        s_on_time       = nullptr;
+static ws_on_disconnect_t  s_on_disconnect = nullptr;
+static bool                s_has_client    = false;
 static uint8_t            *s_jpeg_buf   = nullptr;
 static char               *s_text_buf   = nullptr;
 
@@ -113,6 +114,7 @@ static void on_ws_event(AsyncWebSocket *ws, AsyncWebSocketClient *client,
     if (type == WS_EVT_DISCONNECT) {
         Serial.printf("[WS] cliente %u desconectado\n", client->id());
         s_has_client = false;
+        if (s_on_disconnect) s_on_disconnect();
         return;
     }
     if (type != WS_EVT_DATA || len == 0) return;
@@ -189,21 +191,23 @@ static void on_ws_event(AsyncWebSocket *ws, AsyncWebSocketClient *client,
 }
 
 /* ── ws_server_start ─────────────────────────────────────────────────────── */
-bool ws_server_start(uint16_t       *screen_buf,
-                     ws_on_frame_t   on_frame,
-                     ws_on_notify_t  on_notify,
-                     ws_on_stats_t   on_stats,
-                     ws_on_layout_t  on_layout,
-                     ws_on_time_t    on_time) {
+bool ws_server_start(uint16_t           *screen_buf,
+                     ws_on_frame_t       on_frame,
+                     ws_on_notify_t      on_notify,
+                     ws_on_stats_t       on_stats,
+                     ws_on_layout_t      on_layout,
+                     ws_on_time_t        on_time,
+                     ws_on_disconnect_t  on_disconnect) {
     if (s_server) return true;
     if (!screen_buf || !on_frame) return false;
 
-    s_screen_buf = screen_buf;
-    s_on_frame   = on_frame;
-    s_on_notify  = on_notify;
-    s_on_stats   = on_stats;
-    s_on_layout  = on_layout;
-    s_on_time    = on_time;
+    s_screen_buf    = screen_buf;
+    s_on_frame      = on_frame;
+    s_on_notify     = on_notify;
+    s_on_stats      = on_stats;
+    s_on_layout     = on_layout;
+    s_on_time       = on_time;
+    s_on_disconnect = on_disconnect;
 
 #ifdef USE_STA_MODE
     /* Conectar a red existente */

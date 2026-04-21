@@ -72,6 +72,12 @@ static void on_time(uint32_t epoch) {
     ui_layout_set_time(epoch);
 }
 
+static void on_disconnect(void) {
+    Serial.println("[Main] cliente desconectado → volviendo a stats");
+    s_frame_ready = false;   /* descartar último frame congelado */
+    ui_layout_init();        /* restaurar layout por defecto (stats + reloj) */
+}
+
 /* ── setup ───────────────────────────────────────────────────────────────── */
 void setup() {
 #ifdef ARDUINO_USB_CDC_ON_BOOT
@@ -136,7 +142,7 @@ void setup() {
     /* Servidor WebSocket (incluye init Wi-Fi) */
     Serial.println("[Main] Iniciando servidor WS...");
     if (!ws_server_start(s_screen_buf, on_frame, on_notify, on_stats,
-                         on_layout, on_time)) {
+                         on_layout, on_time, on_disconnect)) {
         Serial.println("[Main] ERROR: ws_server_start");
         while (1);
     }

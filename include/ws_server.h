@@ -45,14 +45,16 @@ typedef void (*ws_on_notify_t)(const ws_notify_t *n);
 typedef void (*ws_on_stats_t)(const ws_stats_t *s);
 typedef void (*ws_on_layout_t)(const char *json, size_t len); /* layout JSON crudo */
 typedef void (*ws_on_time_t)(uint32_t epoch);                 /* sincronización hora */
+typedef void (*ws_on_disconnect_t)(void);             /* cliente desconectado */
 
 /* API pública */
-bool ws_server_start(uint16_t        *screen_buf,
-                     ws_on_frame_t    on_frame,
-                     ws_on_notify_t   on_notify,
-                     ws_on_stats_t    on_stats,
-                     ws_on_layout_t   on_layout,
-                     ws_on_time_t     on_time);
+bool ws_server_start(uint16_t           *screen_buf,
+                     ws_on_frame_t       on_frame,
+                     ws_on_notify_t      on_notify,
+                     ws_on_stats_t       on_stats,
+                     ws_on_layout_t      on_layout,
+                     ws_on_time_t        on_time,
+                     ws_on_disconnect_t  on_disconnect = nullptr);
 
 void ws_server_stop(void);
 bool ws_server_is_running(void);
